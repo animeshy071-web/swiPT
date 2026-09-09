@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SwipeGPT Dashboard</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="popup-container">
+    <!-- Header -->
+    <header class="popup-header">
+      <div class="brand">
+        <img src="../assets/icon32.png" alt="SwipeGPT" class="brand-icon">
+        <span class="brand-title">SwipeGPT</span>
+      </div>
+      <nav class="popup-tabs">
+        <button class="tab-btn active" data-tab="dashboard">Stats</button>
+        <button class="tab-btn" data-tab="saved">Saved</button>
+        <button class="tab-btn" data-tab="settings">Settings</button>
+      </nav>
+    </header>
+
+    <!-- Tab 1: Dashboard / Stats -->
+    <main id="tab-dashboard" class="tab-content active">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <span class="stat-number" id="stat-viewed">0</span>
+          <span class="stat-label">Viewed</span>
+        </div>
+        <div class="stat-card highlight-save">
+          <span class="stat-number" id="stat-saved">0</span>
+          <span class="stat-label">Saved</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-number" id="stat-dismissed">0</span>
+          <span class="stat-label">Dismissed</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-number" id="stat-later">0</span>
+          <span class="stat-label">Later</span>
+        </div>
+      </div>
+
+      <div class="quick-banner">
+        <div class="banner-text">
+          <strong>Interactive Tinder Layer</strong>
+          <p>Click "Swipe this answer" beneath lists on ChatGPT to review cards.</p>
+        </div>
+      </div>
+
+      <div class="saved-preview-section">
+        <div class="section-title-row">
+          <span class="section-heading">Recent Liked Cards</span>
+          <button class="btn-link" id="btn-view-all-saved">View All</button>
+        </div>
+        <div class="cards-preview-list" id="preview-list">
+          <!-- Populated by JS -->
+        </div>
+      </div>
+
+      <button class="btn-secondary-link" id="btn-reset-stats" style="margin-top: auto; align-self: center;">Reset Stats Counters</button>
+    </main>
+
+    <!-- Tab 2: Saved Cards -->
+    <main id="tab-saved" class="tab-content">
+      <div class="saved-search-bar">
+        <input type="text" id="saved-search-input" placeholder="Search saved cards..." class="saved-search-field">
+      </div>
+
+      <div class="saved-header">
+        <span class="saved-count-badge" id="saved-total-count">0 Saved Cards</span>
+        <div class="saved-header-actions">
+          <button class="btn-action-small" id="btn-export-markdown" title="Export as Markdown">📥 Export</button>
+          <button class="btn-clear-all" id="btn-clear-all">Clear All</button>
+        </div>
+      </div>
+
+      <div class="saved-cards-list" id="saved-cards-full-list">
+        <!-- Populated by JS -->
+      </div>
+    </main>
+
+    <!-- Tab 3: Settings -->
+    <main id="tab-settings" class="tab-content">
+      <div class="setting-item">
+        <div class="setting-info">
+          <span class="setting-title">Card Animations</span>
+          <span class="setting-desc">Fluid spring-back & exit transforms</span>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="setting-animations" checked>
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="setting-item">
+        <div class="setting-info">
+          <span class="setting-title">Keyboard Shortcuts</span>
+          <span class="setting-desc">Arrow keys (←, →, ↑, ↓) & Ctrl+Z</span>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="setting-shortcuts" checked>
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="setting-item">
+        <div class="setting-info">
+          <span class="setting-title">Card Density</span>
+          <span class="setting-desc">Adjust stack scale & typography</span>
+        </div>
+        <select id="setting-density" class="select-field">
+          <option value="comfortable">Comfortable</option>
+          <option value="compact">Compact</option>
+        </select>
+      </div>
+
+      <div class="setting-item">
+        <div class="setting-info">
+          <span class="setting-title">Swipe Sensitivity</span>
+          <span class="setting-desc">Drag distance threshold before action</span>
+        </div>
+        <span class="badge-status" id="badge-threshold">35%</span>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="popup-footer">
+      <span>SwipeGPT v1.0.0</span>
+      <a href="https://chatgpt.com" target="_blank" class="footer-link">Open ChatGPT ↗</a>
+    </footer>
+  </div>
+
+  <script src="../storage/storage.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

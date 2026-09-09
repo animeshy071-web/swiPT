@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ChatGPT Mock - DOM Injection Test</title>
+  <!-- Extension CSS and Page CSS -->
+  <link rel="stylesheet" href="../content/styles.css">
+  <style>
+    :root {
+      --chat-bg: #212121;
+      --chat-sidebar: #171717;
+      --chat-surface: #2f2f2f;
+      --chat-text: #ececec;
+      --chat-text-muted: #b4b4b4;
+      --chat-border: rgba(255, 255, 255, 0.1);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: var(--chat-bg);
+      color: var(--chat-text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      height: 100vh;
+      display: flex;
+    }
+    /* Simulated Sidebar */
+    .chat-sidebar {
+      width: 260px;
+      background: var(--chat-sidebar);
+      border-right: 1px solid var(--chat-border);
+      display: flex;
+      flex-direction: column;
+      padding: 16px;
+      gap: 12px;
+    }
+    .sidebar-brand {
+      font-size: 14px;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .chat-history-item {
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      color: var(--chat-text-muted);
+      cursor: pointer;
+      background: rgba(255, 255, 255, 0.05);
+    }
+    .chat-history-item.active {
+      background: rgba(255, 255, 255, 0.12);
+      color: #fff;
+    }
+    .btn-simulate {
+      margin-top: auto;
+      background: #10a37f;
+      border: none;
+      color: #fff;
+      padding: 10px;
+      border-radius: 8px;
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .btn-simulate:hover { background: #1a7f64; }
+
+    /* Simulated Main Chat Stream */
+    .chat-main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      padding: 32px 0 100px 0;
+    }
+    .chat-conversation-container {
+      max-width: 768px;
+      width: 100%;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+      padding: 0 20px;
+    }
+    /* User Turn */
+    .turn-user {
+      display: flex;
+      justify-content: flex-end;
+    }
+    .turn-user-bubble {
+      background: var(--chat-surface);
+      padding: 10px 18px;
+      border-radius: 18px;
+      font-size: 14.5px;
+      max-width: 80%;
+    }
+    /* Assistant Turn (Exact structural DOM tags used by ChatGPT) */
+    article[data-testid^="conversation-turn-"] {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .assistant-role-header {
+      font-size: 13px;
+      font-weight: 700;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .assistant-avatar {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #10a37f;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      color: #fff;
+    }
+    .markdown.prose {
+      font-size: 15px;
+      line-height: 1.7;
+      color: #ececec;
+    }
+    .markdown.prose ol {
+      margin: 12px 0 12px 24px;
+    }
+    .markdown.prose li {
+      margin-bottom: 12px;
+    }
+    .markdown.prose strong {
+      color: #fff;
+    }
+    .chat-input-bar {
+      position: fixed;
+      bottom: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 768px;
+      padding: 0 20px;
+    }
+    .chat-input-box {
+      background: var(--chat-surface);
+      border: 1px solid var(--chat-border);
+      border-radius: 24px;
+      padding: 14px 20px;
+      color: #b4b4b4;
+      font-size: 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+  </style>
+</head>
+<body>
+  <!-- ChatGPT Sidebar Mock -->
+  <aside class="chat-sidebar">
+    <div class="sidebar-brand">
+      <span>ChatGPT</span>
+      <span style="font-size: 11px; padding: 2px 6px; background: rgba(255,255,255,0.1); border-radius: 4px;">Plus</span>
+    </div>
+    <div class="chat-history-item active">5 AI SaaS Project Ideas</div>
+    <div class="chat-history-item">Kubernetes vs Serverless</div>
+    <div class="chat-history-item">Python Fastify API Example</div>
+
+    <button class="btn-simulate" id="btn-simulate-stream">
+      <span>⚡ Stream New Answer</span>
+    </button>
+  </aside>
+
+  <!-- Main Chat Conversation View -->
+  <main class="chat-main">
+    <div class="chat-conversation-container" id="conversation-container">
+      
+      <!-- User Message Turn -->
+      <div class="turn-user">
+        <div class="turn-user-bubble">
+          Suggest 5 profitable AI SaaS ideas for indie hackers in 2026.
+        </div>
+      </div>
+
+      <!-- Assistant Message Turn (Target for SwipeGPT content script) -->
+      <article data-testid="conversation-turn-2">
+        <div class="assistant-role-header">
+          <div class="assistant-avatar">AI</div>
+          <span>ChatGPT</span>
+        </div>
+        <div data-message-author-role="assistant" class="agent-turn">
+          <div class="markdown prose">
+            <p>Here are 5 profitable AI SaaS ideas tailored for solo founders and indie hackers:</p>
+            <ol>
+              <li>
+                <strong>Voiceflow to Code Engine:</strong> An AI copilot that listens to customer interviews, product specs, or support calls, and automatically generates functional React prototypes.
+              </li>
+              <li>
+                <strong>Automated Compliance Auditor:</strong> A continuous AI agent that monitors GitHub repositories and AWS infra against SOC2, HIPAA, and GDPR standards in real-time.
+              </li>
+              <li>
+                <strong>Micro-SaaS SEO Programmatic Engine:</strong> Takes your core product keyword cluster and builds high-quality, research-backed programmatic comparison landing pages.
+              </li>
+              <li>
+                <strong>AI Meeting Memory & Action Sync:</strong> Extracts commitments, dates, and PR review blockers from Slack and Google Meet transcripts, syncing them directly to Linear or Jira.
+              </li>
+              <li>
+                <strong>Smart SQL Query Optimizer:</strong> Chrome extension that intercepts slow PostgreSQL queries, graphs the explain plan, and suggests indexed rewrites.
+              </li>
+            </ol>
+            <!-- SwipeGPT trigger button will be injected here automatically by MutationObserver -->
+          </div>
+        </div>
+      </article>
+
+    </div>
+
+    <div class="chat-input-bar">
+      <div class="chat-input-box">
+        <span>Message ChatGPT...</span>
+        <span>⬆</span>
+      </div>
+    </div>
+  </main>
+
+  <!-- SwipeGPT Extension Scripts -->
+  <script src="../storage/storage.js"></script>
+  <script src="../content/cardParser.js"></script>
+  <script src="../content/swipeEngine.js"></script>
+  <script src="../content/content.js"></script>
+
+  <!-- Simulation Logic for Streaming New Message -->
+  <script>
+    document.getElementById('btn-simulate-stream').addEventListener('click', () => {
+      const container = document.getElementById('conversation-container');
+
+      // Add user prompt
+      const userDiv = document.createElement('div');
+      userDiv.className = 'turn-user';
+      userDiv.innerHTML = `<div class="turn-user-bubble">What are 3 pros of TypeScript?</div>`;
+      container.appendChild(userDiv);
+
+      // Add assistant turn with streaming indicator
+      const turnArticle = document.createElement('article');
+      turnArticle.setAttribute('data-testid', `conversation-turn-${Date.now()}`);
+      turnArticle.innerHTML = `
+        <div class="assistant-role-header">
+          <div class="assistant-avatar">AI</div>
+          <span>ChatGPT</span>
+        </div>
+        <div data-message-author-role="assistant" class="agent-turn">
+          <div class="markdown prose result-streaming">
+            <p>Generating TypeScript benefits...</p>
+          </div>
+        </div>
+      `;
+      container.appendChild(turnArticle);
+
+      // Simulate streaming completion after 1.2s
+      setTimeout(() => {
+        const prose = turnArticle.querySelector('.markdown.prose');
+        prose.classList.remove('result-streaming');
+        prose.innerHTML = `
+          <p>Here are 3 top benefits of using TypeScript in modern development:</p>
+          <ul>
+            <li><strong>Compile-Time Type Safety:</strong> Catches null pointers, typos, and signature mismatch errors before code reaches staging or production.</li>
+            <li><strong>Superior Developer Experience & Autocomplete:</strong> Rich IntelliSense, instantaneous refactoring, and auto-imported symbol references.</li>
+            <li><strong>Self-Documenting Codebases:</strong> Interfaces and types act as living contracts between microservices and frontend clients.</li>
+          </ul>
+        `;
+        // MutationObserver in content.js will automatically detect this and inject the trigger!
+      }, 1200);
+    });
+  </script>
+</body>
+</html>

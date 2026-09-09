@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SwipeGPT Card Parser Test Suite</title>
+  <style>
+    body {
+      background: #0f172a;
+      color: #f8fafc;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      padding: 30px;
+    }
+    h1 { font-size: 22px; margin-bottom: 20px; }
+    .test-result {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      margin-bottom: 8px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    .test-pass { border-left: 4px solid #10b981; }
+    .test-fail { border-left: 4px solid #ef4444; }
+    .status-badge {
+      font-weight: 700;
+      font-size: 12px;
+      padding: 3px 8px;
+      border-radius: 4px;
+    }
+    .pass-badge { background: rgba(16, 185, 129, 0.2); color: #34d399; }
+    .fail-badge { background: rgba(239, 68, 68, 0.2); color: #f87171; }
+    .test-name { font-size: 14px; font-weight: 600; flex: 1; }
+    .test-detail { font-size: 12px; color: #94a3b8; }
+    #summary { margin-top: 20px; font-size: 16px; font-weight: 700; }
+  </style>
+</head>
+<body>
+  <h1>🧪 SwipeGPT Card Parser Automated Tests</h1>
+  <div id="results"></div>
+  <div id="summary">Running tests...</div>
+
+  <!-- Hidden fixtures container -->
+  <div id="fixtures" style="display: none;">
+    <!-- Fixture 1: Ordered list with strong tags -->
+    <div id="fixture-ol">
+      <ol>
+        <li><strong>Step 1: Planning</strong> - Define the scope and architecture.</li>
+        <li><strong>Step 2: Execution</strong> - Code the modules step by step.</li>
+        <li><strong>Step 3: Verification</strong> - Test with automated suites.</li>
+      </ol>
+    </div>
+
+    <!-- Fixture 2: Unordered pros and cons -->
+    <div id="fixture-pros-cons">
+      <ul>
+        <li><strong>Advantage: Fast iteration</strong> Teams can deploy quickly.</li>
+        <li><strong>Drawback: Complexity</strong> Managing multiple repos takes time.</li>
+        <li><strong>Benefit: High resilience</strong> Isolated failure domains.</li>
+      </ul>
+    </div>
+
+    <!-- Fixture 3: Headings with paragraphs and code -->
+    <div id="fixture-headings">
+      <h3>1. Antigravity IDE</h3>
+      <p>Modern agentic IDE with terminal and subagent tools.</p>
+      <pre><code>npx antigravity start</code></pre>
+      <h3>2. Chrome DevTools</h3>
+      <p>Essential for DOM inspection and performance profiling.</p>
+    </div>
+
+    <!-- Fixture 4: Comparison Table -->
+    <div id="fixture-table">
+      <table>
+        <thead>
+          <tr><th>Framework</th><th>Language</th><th>Speed</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>FastAPI</td><td>Python</td><td>Very Fast</td></tr>
+          <tr><td>Express</td><td>Node.js</td><td>Fast</td></tr>
+          <tr><td>Gin</td><td>Go</td><td>Ultra Fast</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Fixture 5: Bold Lead-in Paragraphs -->
+    <div id="fixture-bold-paragraphs">
+      <p><strong>Item Alpha:</strong> First lead-in paragraph explaining alpha concept.</p>
+      <p><strong>Item Beta:</strong> Second lead-in paragraph explaining beta concept.</p>
+    </div>
+
+    <!-- Fixture 6: Unparseable single plain text paragraph -->
+    <div id="fixture-unparseable">
+      <p>I am an AI assistant. How can I help you today with your coding questions?</p>
+    </div>
+  </div>
+
+  <script src="../content/cardParser.js"></script>
+  <script>
+    const resultsContainer = document.getElementById('results');
+    const summaryContainer = document.getElementById('summary');
+    let passed = 0;
+    let failed = 0;
+
+    function assert(name, condition, detail = '') {
+      const div = document.createElement('div');
+      div.className = `test-result ${condition ? 'test-pass' : 'test-fail'}`;
+      div.innerHTML = `
+        <span class="status-badge ${condition ? 'pass-badge' : 'fail-badge'}">${condition ? 'PASS' : 'FAIL'}</span>
+        <span class="test-name">${name}</span>
+        <span class="test-detail">${detail}</span>
+      `;
+      resultsContainer.appendChild(div);
+      if (condition) passed++; else failed++;
+    }
+
+    // Run tests
+    const parser = window.SwipeGPTCardParser;
+
+    // Test 1: Ordered list parsing
+    const olResult = parser.parse(document.getElementById('fixture-ol'));
+    assert(
+      'Ordered List Parsing',
+      olResult && olResult.length === 3 && olResult[0].title === 'Step 1: Planning',
+      `Parsed ${olResult?.length} cards. First title: "${olResult?.[0]?.title}"`
+    );
+
+    // Test 2: Pros & Cons type detection
+    const prosConsResult = parser.parse(document.getElementById('fixture-pros-cons'));
+    assert(
+      'Pros & Cons Semantic Type Detection',
+      prosConsResult && prosConsResult.length === 3 && prosConsResult[0].type === 'pros-cons',
+      `Type detected: "${prosConsResult?.[0]?.type}", Badge: "${prosConsResult?.[0]?.badge}"`
+    );
+
+    // Test 3: Headings with sibling elements
+    const headingsResult = parser.parse(document.getElementById('fixture-headings'));
+    assert(
+      'Headings + Siblings Parsing',
+      headingsResult && headingsResult.length === 2 && headingsResult[0].title === 'Antigravity IDE',
+      `Parsed ${headingsResult?.length} cards. First title: "${headingsResult?.[0]?.title}"`
+    );
+
+    // Test 4: Table parsing
+    const tableResult = parser.parse(document.getElementById('fixture-table'));
+    assert(
+      'Markdown Table Rows Parsing',
+      tableResult && tableResult.length === 3 && tableResult[0].title === 'FastAPI',
+      `Parsed ${tableResult?.length} table cards. First: "${tableResult?.[0]?.title}"`
+    );
+
+    // Test 5: Bold Lead-in Paragraphs
+    const boldResult = parser.parse(document.getElementById('fixture-bold-paragraphs'));
+    assert(
+      'Bold Lead-in Paragraphs Parsing',
+      boldResult && boldResult.length === 2 && boldResult[0].title === 'Item Alpha',
+      `Parsed ${boldResult?.length} cards. First: "${boldResult?.[0]?.title}"`
+    );
+
+    // Test 6: Failsafe on unstructured text
+    const unparseableResult = parser.parse(document.getElementById('fixture-unparseable'));
+    assert(
+      'Failsafe Graceful Fallback (Returns null)',
+      unparseableResult === null,
+      `Result was: ${unparseableResult === null ? 'null (correct)' : 'not null (incorrect)'}`
+    );
+
+    // Test 7: Schema compliance
+    if (olResult && olResult[0]) {
+      const c = olResult[0];
+      const hasRequiredFields = c.id && c.title && c.content && c.type && c.plainText && c.createdAt;
+      assert(
+        'Card Schema Compliance (TRD)',
+        hasRequiredFields,
+        `All required fields present: id, title, content, type, plainText, createdAt`
+      );
+    }
+
+    summaryContainer.textContent = `Completed: ${passed} passed, ${failed} failed (${passed + failed} total tests)`;
+    summaryContainer.style.color = failed === 0 ? '#34d399' : '#f87171';
+  </script>
+</body>
+</html>
