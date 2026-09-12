@@ -118,6 +118,19 @@ function createCardRow(card, isFull) {
   return item;
 }
 
+function applyPopupTheme(theme) {
+  const isModern = theme === 'modern';
+  document.body.classList.toggle('theme-modern', isModern);
+  const quickToggle = document.getElementById('btn-quick-theme');
+  if (quickToggle) {
+    quickToggle.textContent = isModern ? 'MODERN' : 'CRT-90s';
+  }
+  const themeSelect = document.getElementById('setting-theme');
+  if (themeSelect && themeSelect.value !== theme) {
+    themeSelect.value = theme;
+  }
+}
+
 async function loadSettings() {
   if (!Storage) return;
   const settings = await Storage.getSettings();
@@ -125,6 +138,27 @@ async function loadSettings() {
   const shortCheckbox = document.getElementById('setting-shortcuts');
   const densitySelect = document.getElementById('setting-density');
   const thresholdBadge = document.getElementById('badge-threshold');
+  const themeSelect = document.getElementById('setting-theme');
+  const quickToggle = document.getElementById('btn-quick-theme');
+  const currentTheme = settings.theme || 'crt';
+
+  applyPopupTheme(currentTheme);
+
+  if (themeSelect) {
+    themeSelect.value = currentTheme;
+    themeSelect.addEventListener('change', async (e) => {
+      settings.theme = e.target.value;
+      await Storage.saveSettings(settings);
+      applyPopupTheme(settings.theme);
+    });
+  }
+
+  quickToggle?.addEventListener('click', async () => {
+    const nextTheme = (settings.theme === 'modern') ? 'crt' : 'modern';
+    settings.theme = nextTheme;
+    await Storage.saveSettings(settings);
+    applyPopupTheme(nextTheme);
+  });
 
   if (animCheckbox) animCheckbox.checked = settings.animationsEnabled;
   if (shortCheckbox) shortCheckbox.checked = settings.keyboardShortcuts;

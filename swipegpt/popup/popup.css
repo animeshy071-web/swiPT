@@ -135,6 +135,24 @@ body {
   gap: 6px;
 }
 
+.crt-badge-theme {
+  font-family: var(--crt-font-retro);
+  font-size: 7px;
+  background: transparent;
+  color: var(--crt-magenta);
+  border: 1px solid var(--crt-magenta);
+  padding: 2px 5px;
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.crt-badge-theme:hover {
+  background: var(--crt-magenta);
+  color: #000;
+  box-shadow: 0 0 8px var(--crt-magenta);
+}
+
 .crt-badge-av {
   font-family: var(--crt-font-retro);
   font-size: 7.5px;
@@ -608,4 +626,257 @@ input:checked + .slider:before {
   color: var(--crt-magenta);
   text-shadow: 0 0 5px var(--crt-magenta);
 }
+
+/* ==========================================================================
+   POPUP MODERN CLEAN THEME OVERRIDES (BASIC / GENERIC MODE)
+   Activates when body.theme-modern is present
+   ========================================================================== */
+
+body.theme-modern {
+  background-color: #0b1120 !important;
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(99, 102, 241, 0.18) 0px, transparent 55%),
+    radial-gradient(at 100% 100%, rgba(236, 72, 153, 0.14) 0px, transparent 55%) !important;
+  background-size: 100% 100% !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  color: #f8fafc !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
+}
+
+body.theme-modern .crt-top-bezel-tag,
+body.theme-modern .crt-badge-av,
+body.theme-modern .crt-hz-tag,
+body.theme-modern .corner-tl,
+body.theme-modern .corner-tr,
+body.theme-modern .corner-bl,
+body.theme-modern .corner-br {
+  display: none !important;
+}
+
+body.theme-modern .brand-title {
+  font-size: 18px !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.02em !important;
+  background: linear-gradient(135deg, #a5b4fc, #f472b6) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  text-shadow: none !important;
+}
+
+body.theme-modern .brand-subtag {
+  font-size: 10px !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  color: #e2e8f0 !important;
+}
+
+body.theme-modern .crt-badge-theme {
+  font-family: inherit !important;
+  font-size: 10px !important;
+  background: rgba(99, 102, 241, 0.2) !important;
+  border-color: rgba(99, 102, 241, 0.4) !important;
+  color: #a5b4fc !important;
+  padding: 3px 8px !important;
+  border-radius: 9999px !important;
+}
+
+body.theme-modern .popup-tabs {
+  background: rgba(15, 23, 42, 0.6) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 10px !important;
+  padding: 3px !important;
+}
+
+body.theme-modern .tab-btn {
+  font-family: inherit !important;
+  font-size: 12.5px !important;
+  font-weight: 500 !important;
+  color: #94a3b8 !important;
+  border: none !important;
+  border-radius: 8px !important;
+  letter-spacing: normal !important;
+}
+
+body.theme-modern .tab-btn.active {
+  background: rgba(255, 255, 255, 0.12) !important;
+  color: #fff !important;
+  font-weight: 600 !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3) !important;
+}
+
+body.theme-modern .stat-card {
+  background: rgba(30, 41, 59, 0.7) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 12px !important;
+  box-shadow: none !important;
+  padding: 12px !important;
+}
+
+body.theme-modern .stat-card.highlight-save {
+  border-color: rgba(16, 185, 129, 0.3) !important;
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.12) 0%, rgba(30, 41, 59, 0.7) 100%) !important;
+}
+
+body.theme-modern .stat-number {
+  font-size: 24px !important;
+  font-weight: 800 !important;
+  color: #f8fafc !important;
+  text-shadow: none !important;
+}
+
+body.theme-modern .highlight-save .stat-number {
+  color: #34d399 !important;
+}
+
+body.theme-modern .stat-label {
+  font-size: 11px !important;
+  text-transform: uppercase !important;
+  color: #94a3b8 !important;
+  font-weight: 600 !important;
+}
+
+body.theme-modern .quick-banner {
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.15) 0%, rgba(236, 72, 153, 0.15) 100%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-left: 1px solid rgba(255, 255, 255, 0.12) !important;
+  border-radius: 12px !important;
+  padding: 10px 12px !important;
+}
+
+body.theme-modern .banner-text strong {
+  font-size: 12px !important;
+  color: #c7d2fe !important;
+  text-shadow: none !important;
+}
+
+body.theme-modern .banner-text p {
+  font-size: 11px !important;
+  color: #94a3b8 !important;
+}
+
+body.theme-modern .section-heading {
+  font-family: inherit !important;
+  font-size: 11.5px !important;
+  font-weight: 600 !important;
+  color: #94a3b8 !important;
+  letter-spacing: 0.05em !important;
+}
+
+body.theme-modern .btn-link {
+  font-family: inherit !important;
+  font-size: 11.5px !important;
+  font-weight: 600 !important;
+  color: #818cf8 !important;
+  letter-spacing: normal !important;
+}
+
+body.theme-modern .saved-card-item {
+  background: rgba(30, 41, 59, 0.7) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 10px !important;
+  padding: 10px 12px !important;
+  box-shadow: none !important;
+}
+
+body.theme-modern .saved-item-title {
+  font-family: inherit !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  color: #f8fafc !important;
+}
+
+body.theme-modern .saved-search-field {
+  background: rgba(15, 23, 42, 0.7) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 8px !important;
+  font-family: inherit !important;
+  font-size: 12.5px !important;
+  letter-spacing: normal !important;
+}
+
+body.theme-modern .saved-count-badge {
+  font-family: inherit !important;
+  font-size: 12px !important;
+  color: #94a3b8 !important;
+}
+
+body.theme-modern .btn-action-small {
+  background: rgba(99, 102, 241, 0.15) !important;
+  border: 1px solid rgba(99, 102, 241, 0.3) !important;
+  color: #a5b4fc !important;
+  border-radius: 6px !important;
+  font-family: inherit !important;
+  font-size: 11px !important;
+}
+
+body.theme-modern .btn-clear-all {
+  border: 1px solid rgba(244, 63, 94, 0.3) !important;
+  color: #f43f5e !important;
+  border-radius: 6px !important;
+  font-family: inherit !important;
+  font-size: 11px !important;
+}
+
+body.theme-modern .setting-item {
+  background: rgba(30, 41, 59, 0.7) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 12px !important;
+}
+
+body.theme-modern .setting-title {
+  font-family: inherit !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  letter-spacing: normal !important;
+}
+
+body.theme-modern .setting-desc {
+  font-family: inherit !important;
+  font-size: 11px !important;
+  color: #94a3b8 !important;
+}
+
+body.theme-modern .select-field {
+  background: rgba(15, 23, 42, 0.8) !important;
+  border: 1px solid rgba(255, 255, 255, 0.15) !important;
+  border-radius: 8px !important;
+  font-family: inherit !important;
+  font-size: 12px !important;
+}
+
+body.theme-modern .badge-status {
+  font-family: inherit !important;
+  font-size: 11px !important;
+  background: rgba(255, 255, 255, 0.08) !important;
+  border: none !important;
+  border-radius: 6px !important;
+}
+
+body.theme-modern .slider {
+  border-radius: 22px !important;
+  background-color: rgba(255, 255, 255, 0.2) !important;
+  border: none !important;
+}
+body.theme-modern .slider:before {
+  border-radius: 50% !important;
+  background-color: white !important;
+}
+body.theme-modern input:checked + .slider {
+  background-color: #6366f1 !important;
+  box-shadow: none !important;
+}
+
+body.theme-modern .popup-footer {
+  font-family: inherit !important;
+  font-size: 11px !important;
+  color: #64748b !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+body.theme-modern .footer-link {
+  color: #818cf8 !important;
+  font-family: inherit !important;
+}
+
 

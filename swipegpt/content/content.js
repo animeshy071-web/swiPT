@@ -13,6 +13,7 @@
   let activeExpandedCard = null;
   let scanDebounceTimer = null;
   let previousBodyOverflow = '';
+  let currentTheme = 'crt';
 
   // Active swipe session cache & session history
   let latestSessionCache = {
@@ -38,8 +39,13 @@
     observeChatStream();
     observePromptTools();
 
-    // Load persisted sessions
+    // Load persisted settings & theme
     if (window.SwipeGPTStorage) {
+      const settings = await window.SwipeGPTStorage.getSettings();
+      if (settings?.theme) {
+        applyTheme(settings.theme);
+      }
+
       const sessions = await window.SwipeGPTStorage.getSessions();
       if (sessions && sessions.length > 0) {
         allSessionsCache = sessions;
@@ -51,6 +57,15 @@
           allSessionsCache = [saved];
         }
       }
+    }
+
+    // Real-time theme synchronization from popup
+    if (typeof chrome !== 'undefined' && chrome.storage?.onChanged) {
+      chrome.storage.onChanged.addListener((changes, areaName) => {
+        if (areaName === 'local' && changes.swipegpt_settings?.newValue?.theme) {
+          applyTheme(changes.swipegpt_settings.newValue.theme);
+        }
+      });
     }
   }
 
@@ -88,6 +103,7 @@
             </div>
             <div class="crt-hud-title">■■ swiPT // FORCE OF WILL ■■</div>
             <div class="crt-hud-actions">
+              <button class="crt-icon-btn crt-theme-btn" id="swipegpt-btn-theme-toggle" title="Switch Theme (CRT-90s / Modern Clean)">📺 CRT</button>
               <button class="crt-icon-btn" id="swipegpt-btn-undo" title="Rewind / Undo (Ctrl+Z)">↺ REW</button>
               <button class="crt-icon-btn" id="swipegpt-btn-close" title="Power Off (Esc)">✕ OFF</button>
             </div>
@@ -156,6 +172,16 @@
       }
     });
 
+    overlayEl.querySelector('#swipegpt-btn-theme-toggle')?.addEventListener('click', async () => {
+      const nextTheme = currentTheme === 'modern' ? 'crt' : 'modern';
+      applyTheme(nextTheme);
+      const Storage = window.SwipeGPTStorage;
+      if (Storage) {
+        await Storage.saveSettings({ theme: nextTheme });
+      }
+      showToast(nextTheme === 'modern' ? '✨ Modern Clean theme' : '📺 Retro CRT-90s theme');
+    });
+
     // Expand modal event bindings
     const closeModal = () => expandModalEl.classList.remove('active');
     overlayEl.querySelector('#swipegpt-modal-close-btn').addEventListener('click', closeModal);
@@ -187,6 +213,63 @@
           closeOverlay();
         }
       }
+    });
+
+    // Apply active theme to newly created overlay
+    applyTheme(currentTheme);
+  }
+
+  function applyTheme(theme) {
+    currentTheme = theme || 'crt';
+    const isModern = currentTheme === 'modern';
+
+    if (overlayEl) {
+      overlayEl.classList.toggle('theme-modern', isModern);
+      const themeBtn = overlayEl.querySelector('#swipegpt-btn-theme-toggle');
+      if (themeBtn) {
+        themeBtn.textContent = isModern ? '✨ MODERN' : '📺 CRT';
+        themeBtn.title = isModern ? 'Theme: Modern Clean (Click to switch to CRT-90s)' : 'Theme: Retro CRT-90s (Click to switch to Modern Clean)';
+      }
+      const hudTitle = overlayEl.querySelector('.crt-hud-title');
+      if (hudTitle) {
+        hudTitle.textContent = isModern ? 'swiPT · Decision Deck' : '■■ swiPT // FORCE OF WILL ■■';
+      }
+      const footerHints = overlayEl.querySelector('.crt-screen-footer');
+      if (footerHints) {
+        if (isModern) {
+          footerHints.innerHTML = `
+            <span class="crt-key-hint"><kbd>◀</kbd> Dismiss</span>
+            <span class="crt-key-hint"><kbd>▶</kbd> Keep</span>
+            <span class="crt-key-hint"><kbd>▲</kbd> Expand</span>
+            <span class="crt-key-hint"><kbd>▼</kbd> Later</span>
+            <span class="crt-key-hint"><kbd>ESC</kbd> Close</span>
+          `;
+        } else {
+          footerHints.innerHTML = `
+            <span class="crt-key-hint"><kbd>◀</kbd> PURGE</span>
+            <span class="crt-key-hint"><kbd>▶</kbd> KEEP</span>
+            <span class="crt-key-hint"><kbd>▲</kbd> EXPAND</span>
+            <span class="crt-key-hint"><kbd>▼</kbd> DEFER</span>
+            <span class="crt-key-hint"><kbd>ESC</kbd> POWER</span>
+          `;
+        }
+      }
+    }
+
+    document.body.classList.toggle('swipt-theme-modern', isModern);
+
+    if (mentionPopupEl) {
+      mentionPopupEl.classList.toggle('theme-modern', isModern);
+    }
+
+    // Update all trigger buttons on page
+    document.querySelectorAll('.swipegpt-trigger-btn').forEach(btn => {
+      btn.classList.toggle('theme-modern', isModern);
+      const labelSpan = btn.querySelector('span:not(.swipegpt-trigger-icon)');
+      if (labelSpan) {
+        labelSpan.textContent = isModern ? '[ 🎴 Swipe this answer ]' : '[ 🎴 SWIPE_THIS_ANSWER.EXE ]';
+      }
+      btn.title = isModern ? 'Transform this answer into swipe cards' : 'Transform this answer into retro CRT swipe cards';
     });
   }
 
@@ -225,6 +308,7 @@
 
     const Storage = window.SwipeGPTStorage;
     const settings = Storage ? await Storage.getSettings() : {};
+    applyTheme(settings?.theme || currentTheme);
 
     // Reset current active session for this swipe batch with topic
     latestSessionCache = {
@@ -677,12 +761,13 @@
       const candidateCards = window.SwipeGPTCardParser?.parse(markdownContainer);
       if (!candidateCards || candidateCards.length < 2) return;
 
+      const isModern = currentTheme === 'modern';
       const triggerWrap = document.createElement('div');
       triggerWrap.className = 'swipegpt-trigger-container';
       triggerWrap.innerHTML = `
-        <button class="swipegpt-trigger-btn" type="button" title="Transform this answer into retro CRT swipe cards">
+        <button class="swipegpt-trigger-btn ${isModern ? 'theme-modern' : ''}" type="button" title="${isModern ? 'Transform this answer into swipe cards' : 'Transform this answer into retro CRT swipe cards'}">
           <span class="swipegpt-trigger-icon">🎴</span>
-          <span>[ 🎴 SWIPE_THIS_ANSWER.EXE ]</span>
+          <span>${isModern ? '[ 🎴 Swipe this answer ]' : '[ 🎴 SWIPE_THIS_ANSWER.EXE ]'}</span>
         </button>
       `;
 

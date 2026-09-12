@@ -48,6 +48,7 @@ When **ChatGPT** or **Google Gemini** returns a dense list of 10 SaaS ideas, pro
 ### ⚡ Key Features
 
 * **📺 90s CRT TV Gaming Effect:** Authentic curved glass tube curvature, 4px raster scanlines, cathode electron sweep beam, 60Hz flicker, `♥♥♥♡` life gauge, and vibrant neon magenta/purple phosphor glow (`#ff2a85` / `#79357b`).
+* **✨ Dual Themes (Retro CRT vs Modern Clean):** Prefer a sleek, minimal dark UI without retro distortions? Switch between **Retro CRT-90s** and **Modern Clean** in 1 click from the popup or right inside the deck header!
 * **🤖 Dual AI Support:** Native DOM adapters for both **ChatGPT** (`chatgpt.com`) and **Google Gemini** (`gemini.google.com` / `<rich-textarea>`).
 * **🧠 Context Pulling via `@swiPT`:** Simply type `@swiPT` or click the `+` attach menu to automatically inject your kept and dismissed card choices into your next prompt.
 * **🎯 Smart Topic Matching:** Natural language keyword matcher selects earlier sessions based on what you ask (e.g. *"pull the saas ideas from @swiPT"* vs. *"compare typescript"*).

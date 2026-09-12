@@ -15,7 +15,7 @@ const STORAGE_KEYS = {
 const DEFAULT_SETTINGS = {
   animationsEnabled: true,
   swipeThreshold: 0.35,
-  theme: 'dark',
+  theme: 'crt',
   keyboardShortcuts: true,
   cardDensity: 'comfortable'
 };
