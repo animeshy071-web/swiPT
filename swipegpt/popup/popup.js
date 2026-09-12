@@ -55,11 +55,11 @@ function renderSavedCards(cards) {
   const countBadge = document.getElementById('saved-total-count');
 
   if (countBadge) {
-    countBadge.textContent = `${cards.length} Saved Cards`;
+    countBadge.textContent = `${cards.length} SAVED RECORDS`;
   }
 
   if (cards.length === 0) {
-    const emptyHtml = `<div class="empty-state">No saved cards found. Swipe right on cards in ChatGPT to save them!</div>`;
+    const emptyHtml = `<div class="empty-state">NO SAVED RECORDS. SWIPE RIGHT [KEEP] ON LISTS TO SAVE!</div>`;
     if (previewList) previewList.innerHTML = emptyHtml;
     if (fullList) fullList.innerHTML = emptyHtml;
     return;

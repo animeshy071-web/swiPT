@@ -3,21 +3,40 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SwipeGPT Dashboard</title>
+  <title>swiPT // CRT-TERMINAL</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Share+Tech+Mono&family=VT323&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="popup.css">
 </head>
 <body>
   <div class="popup-container">
+    <!-- Top TV Hardware Bezel -->
+    <div class="crt-top-bezel-tag">
+      <div class="crt-brand-line">
+        <span>■■</span> swiPTRON-90s <span>// RGB-PRO</span>
+      </div>
+      <div class="crt-led-pulse" title="60Hz NTSC OK"></div>
+    </div>
+
     <!-- Header -->
     <header class="popup-header">
-      <div class="brand">
-        <img src="../assets/icon32.png" alt="SwipeGPT" class="brand-icon">
-        <span class="brand-title">SwipeGPT</span>
+      <div class="brand-row">
+        <div class="brand">
+          <span class="brand-icon-retro">🎴</span>
+          <span class="brand-title">swiPT_OS</span>
+          <span class="brand-subtag">v1.1</span>
+        </div>
+        <div class="crt-status-box">
+          <span class="crt-badge-av">AV-1</span>
+          <span class="crt-hz-tag">60Hz</span>
+        </div>
       </div>
+
       <nav class="popup-tabs">
-        <button class="tab-btn active" data-tab="dashboard">Stats</button>
-        <button class="tab-btn" data-tab="saved">Saved</button>
-        <button class="tab-btn" data-tab="settings">Settings</button>
+        <button class="tab-btn active" data-tab="dashboard">▶ STATS</button>
+        <button class="tab-btn" data-tab="saved">💾 SAVED</button>
+        <button class="tab-btn" data-tab="settings">⚙ CONFIG</button>
       </nav>
     </header>
 
@@ -25,54 +44,62 @@
     <main id="tab-dashboard" class="tab-content active">
       <div class="stats-grid">
         <div class="stat-card">
+          <div class="corner-tl">┌</div><div class="corner-tr">┐</div>
+          <div class="corner-bl">└</div><div class="corner-br">┘</div>
           <span class="stat-number" id="stat-viewed">0</span>
-          <span class="stat-label">Viewed</span>
+          <span class="stat-label">VIEWED</span>
         </div>
         <div class="stat-card highlight-save">
+          <div class="corner-tl">┌</div><div class="corner-tr">┐</div>
+          <div class="corner-bl">└</div><div class="corner-br">┘</div>
           <span class="stat-number" id="stat-saved">0</span>
-          <span class="stat-label">Saved</span>
+          <span class="stat-label">♥ KEPT</span>
         </div>
         <div class="stat-card">
+          <div class="corner-tl">┌</div><div class="corner-tr">┐</div>
+          <div class="corner-bl">└</div><div class="corner-br">┘</div>
           <span class="stat-number" id="stat-dismissed">0</span>
-          <span class="stat-label">Dismissed</span>
+          <span class="stat-label">✕ PURGED</span>
         </div>
         <div class="stat-card">
+          <div class="corner-tl">┌</div><div class="corner-tr">┐</div>
+          <div class="corner-bl">└</div><div class="corner-br">┘</div>
           <span class="stat-number" id="stat-later">0</span>
-          <span class="stat-label">Later</span>
+          <span class="stat-label">⏱ DEFERRED</span>
         </div>
       </div>
 
       <div class="quick-banner">
         <div class="banner-text">
-          <strong>Interactive Tinder Layer</strong>
-          <p>Click "Swipe this answer" beneath lists on ChatGPT to review cards.</p>
+          <strong>■ SYSTEM NOTICE: CRT DECK READY</strong>
+          <p>Click "[ 🎴 SWIPE_THIS_ANSWER.EXE ]" on ChatGPT or Gemini lists to power on the CRT TV.</p>
         </div>
       </div>
 
       <div class="saved-preview-section">
         <div class="section-title-row">
-          <span class="section-heading">Recent Liked Cards</span>
-          <button class="btn-link" id="btn-view-all-saved">View All</button>
+          <span class="section-heading">RECENT SAVED DOSSIERS</span>
+          <button class="btn-link" id="btn-view-all-saved">[VIEW ALL ↗]</button>
         </div>
         <div class="cards-preview-list" id="preview-list">
           <!-- Populated by JS -->
         </div>
       </div>
 
-      <button class="btn-secondary-link" id="btn-reset-stats" style="margin-top: auto; align-self: center;">Reset Stats Counters</button>
+      <button class="btn-secondary-link" id="btn-reset-stats" style="margin-top: auto; align-self: center;">[⚠ RESET STATS BUFFER]</button>
     </main>
 
     <!-- Tab 2: Saved Cards -->
     <main id="tab-saved" class="tab-content">
       <div class="saved-search-bar">
-        <input type="text" id="saved-search-input" placeholder="Search saved cards..." class="saved-search-field">
+        <input type="text" id="saved-search-input" placeholder="> SEARCH RECORDS..." class="saved-search-field">
       </div>
 
       <div class="saved-header">
-        <span class="saved-count-badge" id="saved-total-count">0 Saved Cards</span>
+        <span class="saved-count-badge" id="saved-total-count">0 SAVED RECORDS</span>
         <div class="saved-header-actions">
-          <button class="btn-action-small" id="btn-export-markdown" title="Export as Markdown">📥 Export</button>
-          <button class="btn-clear-all" id="btn-clear-all">Clear All</button>
+          <button class="btn-action-small" id="btn-export-markdown" title="Export as Markdown">[💾 EXPORT .MD]</button>
+          <button class="btn-clear-all" id="btn-clear-all">[✕ PURGE ALL]</button>
         </div>
       </div>
 
@@ -85,7 +112,7 @@
     <main id="tab-settings" class="tab-content">
       <div class="setting-item">
         <div class="setting-info">
-          <span class="setting-title">Card Animations</span>
+          <span class="setting-title">Card CRT Physics</span>
           <span class="setting-desc">Fluid spring-back & exit transforms</span>
         </div>
         <label class="switch">
@@ -96,7 +123,7 @@
 
       <div class="setting-item">
         <div class="setting-info">
-          <span class="setting-title">Keyboard Shortcuts</span>
+          <span class="setting-title">Arcade Key Controls</span>
           <span class="setting-desc">Arrow keys (←, →, ↑, ↓) & Ctrl+Z</span>
         </div>
         <label class="switch">
@@ -107,7 +134,7 @@
 
       <div class="setting-item">
         <div class="setting-info">
-          <span class="setting-title">Card Density</span>
+          <span class="setting-title">Tube Density</span>
           <span class="setting-desc">Adjust stack scale & typography</span>
         </div>
         <select id="setting-density" class="select-field">
@@ -118,8 +145,8 @@
 
       <div class="setting-item">
         <div class="setting-info">
-          <span class="setting-title">Swipe Sensitivity</span>
-          <span class="setting-desc">Drag distance threshold before action</span>
+          <span class="setting-title">Phosphor Sensitivity</span>
+          <span class="setting-desc">Drag threshold before swipe triggers</span>
         </div>
         <span class="badge-status" id="badge-threshold">35%</span>
       </div>
@@ -127,8 +154,11 @@
 
     <!-- Footer -->
     <footer class="popup-footer">
-      <span>SwipeGPT v1.0.0</span>
-      <a href="https://chatgpt.com" target="_blank" class="footer-link">Open ChatGPT ↗</a>
+      <span>swiPT // CRT-90s v1.1</span>
+      <div class="footer-links">
+        <a href="https://chatgpt.com" target="_blank" class="footer-link">[CHATGPT]</a>
+        <a href="https://gemini.google.com" target="_blank" class="footer-link">[GEMINI]</a>
+      </div>
     </footer>
   </div>
 
