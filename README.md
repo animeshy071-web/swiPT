@@ -1,81 +1,97 @@
-# 🎴 SwipeGPT
+# 🎴 swiPT // CRT-90s EDITION
 
-> Transform information-dense ChatGPT answers into a Tinder-style swipeable card interface. 100% offline, private, and free.
+> **Transform ChatGPT & Google Gemini list answers into an authentic retro 90s gaming CRT TV swipeable card deck.** Evaluated one by one, zero clutter, 100% private & offline.
 
-[![Chrome MV3](https://img.shields.io/badge/Manifest-V3-6366f1?style=flat-square&logo=googlechrome&logoColor=white)](https://developer.chrome.com/docs/extensions/mv3/intro/)
-[![Vanilla JS](https://img.shields.io/badge/Vanilla-JS-f7df1e?style=flat-square&logo=javascript&logoColor=black)](https://developer.mozilla.org/en-US/docs/Web/JavaScript)
-[![License: MIT](https://img.shields.io/badge/License-MIT-10b981?style=flat-square)](LICENSE)
+<div align="center">
 
----
+[![Chrome MV3](https://img.shields.io/badge/Chrome-MV3-ff2a85?style=for-the-badge&logo=googlechrome&logoColor=white)](https://developer.chrome.com/docs/extensions/mv3/intro/)
+[![ChatGPT](https://img.shields.io/badge/ChatGPT-Supported-79357b?style=for-the-badge&logo=openai&logoColor=white)](https://chatgpt.com)
+[![Google Gemini](https://img.shields.io/badge/Google_Gemini-Supported-ff2a85?style=for-the-badge&logo=googlegemini&logoColor=white)](https://gemini.google.com)
+[![License: MIT](https://img.shields.io/badge/License-MIT-480c5c?style=for-the-badge)](LICENSE)
 
-## ⚡ Why SwipeGPT?
-When ChatGPT gives you a list of 10 project ideas, pros & cons, or tutorial steps, reading a wall of text is tedious. **SwipeGPT** injects a non-intrusive `[ 🎴 Swipe this answer ]` button beneath answers, popping up a hardware-accelerated card deck you can evaluate one by one.
+<br/>
 
-* **Swipe Right (→):** Save / Like to local collection
-* **Swipe Left (←):** Dismiss / Pass
-* **Swipe Up (↑):** Expand full details modal
-* **Swipe Down (↓):** Save for later
-* **Ctrl + Z:** Instant undo
+<img src="./assets/screenshots/crt_tv_overlay.png" alt="swiPT CRT TV Overlay" width="760" style="border-radius: 12px; box-shadow: 0 0 30px rgba(255, 42, 133, 0.4);" />
 
----
+*The Retro 90s Gaming CRT TV Deck featuring curved glass tube, scanlines, AV-1 channel tag, and neon magenta phosphor glow.*
 
-## 🚀 Quick Install (Load Unpacked in 30s)
-
-1. Clone or download this repository:
-   ```bash
-   git clone https://github.com/animeshy071-web/swiPT.git
-   ```
-2. Open Google Chrome and go to `chrome://extensions`.
-3. Enable **Developer mode** (toggle in top-right corner).
-4. Click **Load unpacked** and select the `swipegpt` folder inside this repository.
-5. Go to [chatgpt.com](https://chatgpt.com), ask for any list, and click **Swipe this answer**!
+</div>
 
 ---
 
-## ✨ Features
+### 🕹️ What is swiPT?
 
-* **Deterministic Multi-Strategy Parser:** Extracts cards from numbered lists, bullet points, Markdown headings, and comparison tables without external API calls or latency.
-* **Physics & Gestures:** 60fps hardware-accelerated 3D transforms (`translate3d` + rotation mapped to drag distance) with velocity flick and spring-back.
-* **Non-Destructive ChatGPT Integration:** Uses a debounced `MutationObserver` and fixed overlay (`z-index: 999999`). Never modifies ChatGPT's DOM or interferes with streaming.
-* **Extension Popup Dashboard:**
-  * Real-time metrics (*Viewed*, *Saved*, *Dismissed*, *Later*).
-  * Saved cards search, 1-click clipboard copy, and deletion.
-  * 1-click Markdown export download (`.md`).
-  * Customization: Card animations, keyboard shortcuts, and Compact/Comfortable density.
-* **Offline & Free:** Zero external network calls, zero tracking, zero API keys required.
-
----
-
-## 🛠️ Project Architecture
+When **ChatGPT** or **Google Gemini** returns a dense list of 10 SaaS ideas, pros & cons, or tutorial steps, reading a wall of text is tedious. **swiPT** injects a retro `[ 🎴 SWIPE_THIS_ANSWER.EXE ]` trigger into true list messages, launching a hardware-accelerated 90s CRT video game television monitor where you evaluate each item like a deck of cards.
 
 ```text
-swipegpt/
-├── manifest.json              # Chrome MV3 configuration
-├── content/
-│   ├── cardParser.js          # Multi-strategy HTML/Markdown parser
-│   ├── swipeEngine.js         # Gesture physics, velocity & animation engine
-│   ├── content.js             # ChatGPT MutationObserver & overlay coordinator
-│   └── styles.css             # Glassmorphism dark UI & card stack styling
-├── popup/
-│   ├── popup.html             # Extension dashboard UI
-│   ├── popup.js               # Search, export & settings logic
-│   └── popup.css              # Dark neon glassmorphic theme
-├── storage/
-│   └── storage.js             # chrome.storage.local persistence & undo history
-├── assets/                    # Icons (16, 32, 48, 128 px)
-└── demo/
-    ├── index.html             # Standalone sandbox with physics tuning & telemetry
-    ├── chatgpt_mock.html      # ChatGPT DOM stream simulation environment
-    └── mockData.js            # Sample SaaS, tutorial & comparison datasets
+┌──────────────────────────────────────────────────────────┐
+│  ■■ swiPTRON-90s // RGB-PRO [AV-1]                      │
+│  ◀ [✕ PURGE]      ▲ [⤢ EXPAND]      ▼ [⏱ DEFER]      ▶ [♥ KEEP]  │
+└──────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 🧪 Testing
+### 📺 Visual Showcase
 
-Open `swipegpt/demo/index.html` or `swipegpt/test/parser_test.html` directly in any browser to test physics, gestures, and parser accuracy locally without launching ChatGPT.
+<div align="center">
+
+| 👾 STAGE CLEARED SCREEN | 💬 NATIVE `@swiPT` CONTEXT PULL |
+| :---: | :---: |
+| <img src="./assets/screenshots/stage_cleared.png" width="370" alt="Stage Cleared Screen" /> | <img src="./assets/screenshots/swipt_mention.png" width="370" alt="swiPT Mention Autocomplete" /> |
+| *Review evaluation summary & 1-click transmit to AI* | *Type `@swiPT` to pull kept & purged choices into prompt* |
+
+</div>
 
 ---
 
-## 📄 License
+### ⚡ Key Features
+
+* **📺 90s CRT TV Gaming Effect:** Authentic curved glass tube curvature, 4px raster scanlines, cathode electron sweep beam, 60Hz flicker, `♥♥♥♡` life gauge, and vibrant neon magenta/purple phosphor glow (`#ff2a85` / `#79357b`).
+* **🤖 Dual AI Support:** Native DOM adapters for both **ChatGPT** (`chatgpt.com`) and **Google Gemini** (`gemini.google.com` / `<rich-textarea>`).
+* **🧠 Context Pulling via `@swiPT`:** Simply type `@swiPT` or click the `+` attach menu to automatically inject your kept and dismissed card choices into your next prompt.
+* **🎯 Smart Topic Matching:** Natural language keyword matcher selects earlier sessions based on what you ask (e.g. *"pull the saas ideas from @swiPT"* vs. *"compare typescript"*).
+* **🧹 Zero-Clutter Injection:** `SWIPE_THIS_ANSWER.EXE` button appears **strictly on actual list messages** (`<ol>`, `<ul>`, comparison `<table>`), never on normal conversational answers.
+* **🔒 100% Offline & Private:** Zero external servers, zero tracking, no API keys needed. All data stays in your browser's local storage.
+
+---
+
+### 🎮 Controls
+
+| Action | Keyboard | Gesture / Button |
+| :--- | :---: | :--- |
+| **Keep / Save** | `→` Right Arrow | Swipe Right / `[♥ KEEP]` |
+| **Purge / Discard** | `←` Left Arrow | Swipe Left / `[✕ PURGE]` |
+| **Expand Details** | `↑` Up Arrow | Swipe Up / `[⤢ EXPAND]` |
+| **Save for Later** | `↓` Down Arrow | Swipe Down / `[⏱ DEFER]` |
+| **Rewind (Undo)** | `Ctrl + Z` | Click `[↺ REW]` |
+| **Power Off** | `Esc` | Click `[✕ OFF]` |
+
+---
+
+### 🚀 Quick Install (Load Unpacked in 30s)
+
+1. **Clone the repo:**
+   ```bash
+   git clone https://github.com/animeshy071-web/swiPT.git
+   ```
+2. Open Chrome and go to `chrome://extensions`.
+3. Enable **Developer mode** (top-right toggle).
+4. Click **Load unpacked** and select the `swipegpt` folder.
+5. Open [chatgpt.com](https://chatgpt.com) or [gemini.google.com](https://gemini.google.com), ask for any list, and enjoy the CRT TV deck!
+
+---
+
+### 🧪 Try Demos Locally
+
+Open any of the included mock demos directly in your browser:
+* **Gemini Mock Demo:** [`swipegpt/demo/gemini_mock.html`](swipegpt/demo/gemini_mock.html)
+* **ChatGPT Mock Demo:** [`swipegpt/demo/chatgpt_mock.html`](swipegpt/demo/chatgpt_mock.html)
+* **Physics Sandbox:** [`swipegpt/demo/index.html`](swipegpt/demo/index.html)
+
+---
+
+### 📄 License
+
 MIT © [animeshy071-web](https://github.com/animeshy071-web)
+
