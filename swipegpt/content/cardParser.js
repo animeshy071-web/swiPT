@@ -283,12 +283,11 @@ const CardParser = {
   }
 };
 
-// Register default strategies with priority order
+// Register default strategies with priority order (strict lists prioritized)
 CardParser.registerStrategy('ordered-list', 100, CardParser.parseOrderedList);
-CardParser.registerStrategy('headings', 90, CardParser.parseHeadings);
+CardParser.registerStrategy('unordered-list', 90, CardParser.parseUnorderedList);
 CardParser.registerStrategy('table', 85, CardParser.parseTable);
-CardParser.registerStrategy('unordered-list', 80, CardParser.parseUnorderedList);
-CardParser.registerStrategy('bold-paragraphs', 70, CardParser.parseBoldParagraphs);
+CardParser.registerStrategy('headings', 70, CardParser.parseHeadings);
 
 if (typeof window !== 'undefined') {
   window.SwipeGPTCardParser = CardParser;

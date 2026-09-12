@@ -5,6 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ChatGPT Mock - DOM Injection Test</title>
   <!-- Extension CSS and Page CSS -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Share+Tech+Mono&family=VT323&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../content/styles.css">
   <style>
     :root {
@@ -151,12 +154,91 @@
       background: var(--chat-surface);
       border: 1px solid var(--chat-border);
       border-radius: 24px;
-      padding: 14px 20px;
+      padding: 8px 16px;
       color: #b4b4b4;
       font-size: 14px;
       display: flex;
-      justify-content: space-between;
       align-items: center;
+      gap: 10px;
+      position: relative;
+    }
+    .btn-attach-plus {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      color: #ececf1;
+      font-size: 20px;
+      font-weight: 300;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      flex-shrink: 0;
+    }
+    .btn-attach-plus:hover {
+      background: rgba(255, 255, 255, 0.15);
+      color: #fff;
+    }
+    #prompt-textarea {
+      flex: 1;
+      background: transparent;
+      border: none;
+      outline: none;
+      color: #ececf1;
+      font-family: inherit;
+      font-size: 14px;
+      resize: none;
+      padding: 6px 0;
+      max-height: 120px;
+    }
+    .btn-send-prompt {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: #ffffff;
+      color: #0f172a;
+      border: none;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      flex-shrink: 0;
+    }
+    .btn-send-prompt:hover {
+      background: #e2e8f0;
+      transform: scale(1.05);
+    }
+    .chatgpt-plus-menu {
+      position: absolute;
+      bottom: calc(100% + 12px);
+      left: 20px;
+      background: #212121;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 14px;
+      padding: 6px;
+      box-shadow: 0 12px 32px rgba(0,0,0,0.6);
+      width: 280px;
+      z-index: 10000;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .native-menu-item {
+      padding: 10px 14px;
+      border-radius: 8px;
+      color: #ececf1;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+    .native-menu-item:hover {
+      background: rgba(255, 255, 255, 0.08);
     }
   </style>
 </head>
@@ -218,12 +300,45 @@
         </div>
       </article>
 
+      <!-- User Follow-up Turn -->
+      <div class="turn-user">
+        <div class="turn-user-bubble">
+          What do you think about referencing another UI image for inspiration?
+        </div>
+      </div>
+
+      <!-- Assistant Plain Conversational Turn (NO LIST - Swipe button must NOT appear here) -->
+      <article data-testid="conversation-turn-conversational" id="turn-conversational">
+        <div class="assistant-role-header">
+          <div class="assistant-avatar">AI</div>
+          <span>ChatGPT</span>
+        </div>
+        <div data-message-author-role="assistant" class="agent-turn">
+          <div class="markdown prose">
+            <p><strong>Aur ek important cheez:</strong> Reference image ko "inspiration" mat bolna.</p>
+            <blockquote>
+              <p>"Treat the attached image as a visual design reference. Recreate its layout characteristics and visual system very closely."</p>
+            </blockquote>
+            <p>"Inspired by" bolne par AI usually apna generic version bana deta hai. Agar tu chahe toh main <strong>exact UI breakdown</strong> bana sakta hoon.</p>
+          </div>
+        </div>
+      </article>
+
     </div>
 
     <div class="chat-input-bar">
+      <!-- ChatGPT '+' Popover Menu -->
+      <div class="chatgpt-plus-menu" id="chatgpt-plus-menu" role="menu" style="display: none;">
+        <div role="menuitem" class="native-menu-item">📎 Add photos &amp; files</div>
+        <div role="menuitem" class="native-menu-item">🌐 Web search</div>
+        <div role="menuitem" class="native-menu-item">🎨 Create image</div>
+        <!-- SwipeGPT will inject its @swiPT menuitem here dynamically! -->
+      </div>
+
       <div class="chat-input-box">
-        <span>Message ChatGPT...</span>
-        <span>⬆</span>
+        <button type="button" class="btn-attach-plus" id="btn-attach-plus" aria-label="Attach files" title="Open tools menu">+</button>
+        <textarea id="prompt-textarea" rows="1" placeholder="Message ChatGPT or type @swiPT..."></textarea>
+        <button type="button" class="btn-send-prompt" id="send-button" data-testid="send-button" aria-label="Send prompt" title="Send">⬆</button>
       </div>
     </div>
   </main>
@@ -234,18 +349,104 @@
   <script src="../content/swipeEngine.js"></script>
   <script src="../content/content.js"></script>
 
-  <!-- Simulation Logic for Streaming New Message -->
+  <!-- Simulation Logic for Streaming & @swiPT Context -->
   <script>
-    document.getElementById('btn-simulate-stream').addEventListener('click', () => {
-      const container = document.getElementById('conversation-container');
+    const plusBtn = document.getElementById('btn-attach-plus');
+    const plusMenu = document.getElementById('chatgpt-plus-menu');
+    const sendBtn = document.getElementById('send-button');
+    const promptInput = document.getElementById('prompt-textarea');
+    const container = document.getElementById('conversation-container');
 
-      // Add user prompt
+    // Toggle '+' menu
+    plusBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isHidden = plusMenu.style.display === 'none';
+      plusMenu.style.display = isHidden ? 'flex' : 'none';
+    });
+
+    document.addEventListener('click', (e) => {
+      if (plusMenu && !plusMenu.contains(e.target) && e.target !== plusBtn) {
+        plusMenu.style.display = 'none';
+      }
+    });
+
+    // Handle user prompt sending
+    function submitPrompt() {
+      const text = promptInput.value.trim();
+      if (!text) return;
+
+      // Add user message bubble
+      const userDiv = document.createElement('div');
+      userDiv.className = 'turn-user';
+      userDiv.innerHTML = `<div class="turn-user-bubble" style="white-space: pre-wrap;">${escapeHtml(text)}</div>`;
+      container.appendChild(userDiv);
+      promptInput.value = '';
+
+      // Check if user mentioned @swiPT or if context was injected
+      const hasSwiPTContext = text.includes('@swiPT') || text.includes('[Context from @swiPT');
+
+      // Add assistant turn with streaming indicator
+      const turnArticle = document.createElement('article');
+      turnArticle.setAttribute('data-testid', `conversation-turn-${Date.now()}`);
+      turnArticle.innerHTML = `
+        <div class="assistant-role-header">
+          <div class="assistant-avatar">AI</div>
+          <span>ChatGPT</span>
+        </div>
+        <div data-message-author-role="assistant" class="agent-turn">
+          <div class="markdown prose result-streaming">
+            <p>Thinking...</p>
+          </div>
+        </div>
+      `;
+      container.appendChild(turnArticle);
+      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+
+      setTimeout(() => {
+        const prose = turnArticle.querySelector('.markdown.prose');
+        prose.classList.remove('result-streaming');
+
+        if (hasSwiPTContext) {
+          prose.innerHTML = `
+            <p>I received your selections from <strong>@swiPT</strong>! Here is an actionable roadmap based directly on what you chose:</p>
+            <ol>
+              <li><strong>Prioritized Execution:</strong> Focus on your liked items first by setting up an MVP milestone.</li>
+              <li><strong>Next Phase Recommendations:</strong> For the items you dismissed, we've filtered them out from subsequent ideas so your focus stays sharp.</li>
+              <li><strong>Action Item:</strong> Would you like me to generate a complete implementation checklist or breakdown for any of your chosen items?</li>
+            </ol>
+          `;
+        } else {
+          prose.innerHTML = `
+            <p>Here is my response to: "${escapeHtml(text)}".</p>
+            <ul>
+              <li><strong>Key Takeaway 1:</strong> Always test with high fidelity user input.</li>
+              <li><strong>Key Takeaway 2:</strong> Mention <code>@swiPT</code> anytime to pull your swiped cards directly into the conversation!</li>
+            </ul>
+          `;
+        }
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+      }, 900);
+    }
+
+    sendBtn.addEventListener('click', submitPrompt);
+    promptInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        submitPrompt();
+      }
+    });
+
+    function escapeHtml(str) {
+      return (str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    // Stream new sample answer
+    document.getElementById('btn-simulate-stream').addEventListener('click', () => {
       const userDiv = document.createElement('div');
       userDiv.className = 'turn-user';
       userDiv.innerHTML = `<div class="turn-user-bubble">What are 3 pros of TypeScript?</div>`;
       container.appendChild(userDiv);
 
-      // Add assistant turn with streaming indicator
       const turnArticle = document.createElement('article');
       turnArticle.setAttribute('data-testid', `conversation-turn-${Date.now()}`);
       turnArticle.innerHTML = `
@@ -261,7 +462,6 @@
       `;
       container.appendChild(turnArticle);
 
-      // Simulate streaming completion after 1.2s
       setTimeout(() => {
         const prose = turnArticle.querySelector('.markdown.prose');
         prose.classList.remove('result-streaming');
@@ -273,8 +473,7 @@
             <li><strong>Self-Documenting Codebases:</strong> Interfaces and types act as living contracts between microservices and frontend clients.</li>
           </ul>
         `;
-        // MutationObserver in content.js will automatically detect this and inject the trigger!
-      }, 1200);
+      }, 1000);
     });
   </script>
 </body>

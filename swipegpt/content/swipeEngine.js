@@ -293,22 +293,36 @@ class SwipeEngine {
       cardEl.style.zIndex = `${zIndex}`;
 
       cardEl.innerHTML = `
-        <div class="swipe-badge swipe-badge-like">SAVE</div>
-        <div class="swipe-badge swipe-badge-pass">PASS</div>
-        <div class="swipe-badge swipe-badge-later">LATER</div>
-        <div class="swipe-badge swipe-badge-explore">EXPAND</div>
+        <div class="swipe-badge swipe-badge-like">[ KEEP ]</div>
+        <div class="swipe-badge swipe-badge-pass">[ PURGE ]</div>
+        <div class="swipe-badge swipe-badge-later">[ DEFER ]</div>
+        <div class="swipe-badge swipe-badge-explore">[ EXPAND ]</div>
 
         <div class="card-header">
-          <span class="card-tag">${card.type || 'Card'}</span>
-          <span class="card-counter">${this.currentIndex + stackIndex + 1} / ${this.cards.length}</span>
+          <div class="card-header-left">
+            <span class="card-hearts">♥♥♥<span class="heart-dim">♡</span></span>
+            <span class="card-tag">${card.type || 'SYS_RECORD'}</span>
+          </div>
+          <div class="card-header-right">
+            <span class="card-speed-badge">01x</span>
+            <span class="card-counter">[${this.currentIndex + stackIndex + 1}/${this.cards.length}]</span>
+          </div>
         </div>
-        <h3 class="card-title">${this._escapeHtml(card.title)}</h3>
-        <div class="card-body-content">${card.content}</div>
+
+        <div class="card-screen-frame">
+          <div class="corner-tl">┌</div>
+          <div class="corner-tr">┐</div>
+          <div class="corner-bl">└</div>
+          <div class="corner-br">┘</div>
+          <h3 class="card-title">${this._escapeHtml(card.title)}</h3>
+          <div class="card-body-content">${card.content}</div>
+        </div>
+
         <div class="card-footer-controls">
-          <button class="card-btn-action btn-dismiss" title="Dismiss (←)">✕</button>
-          <button class="card-btn-action btn-later" title="Save for Later (↓)">⏱</button>
-          <button class="card-btn-action btn-explore" title="Expand (↑)">⤢</button>
-          <button class="card-btn-action btn-like" title="Save / Like (→)">♥</button>
+          <button class="card-btn-action btn-dismiss" title="Purge (←)">✕ PURGE</button>
+          <button class="card-btn-action btn-later" title="Defer (↓)">⏱ DEFER</button>
+          <button class="card-btn-action btn-explore" title="Expand (↑)">⤢ EXPAND</button>
+          <button class="card-btn-action btn-like" title="Keep (→)">♥ KEEP</button>
         </div>
       `;
 
@@ -348,14 +362,32 @@ class SwipeEngine {
     const finishedEl = document.createElement('div');
     finishedEl.className = 'swipegpt-finished-card';
     finishedEl.innerHTML = `
-      <div class="finished-icon">🎉</div>
-      <h3>All Cards Evaluated</h3>
-      <p>You have reviewed all ${this.cards.length} items.</p>
-      <div class="finished-actions">
-        <button class="finished-btn restart-btn">Review Again</button>
-        <button class="finished-btn close-btn">Done</button>
+      <div class="finished-screen-inner">
+        <div class="corner-tl">┌</div>
+        <div class="corner-tr">┐</div>
+        <div class="corner-bl">└</div>
+        <div class="corner-br">┘</div>
+        <div class="finished-icon">👾</div>
+        <div class="finished-glitch-title">STAGE CLEARED</div>
+        <div class="finished-subtitle">EVALUATION COMPLETE // ${this.cards.length} RECORDS PROCESSED</div>
+        <div class="finished-telemetry-box">
+          <span>● STATUS: READY</span>
+          <span>● SYNC: 100%</span>
+          <span>● BUFFER: SAVED</span>
+        </div>
+        <div class="finished-actions">
+          <button class="finished-btn prompt-gpt-btn" title="Continue conversation with selected items">▶ TRANSMIT WITH @swiPT</button>
+          <button class="finished-btn restart-btn">↺ RESTART</button>
+          <button class="finished-btn close-btn">✕ POWER OFF</button>
+        </div>
       </div>
     `;
+
+    finishedEl.querySelector('.prompt-gpt-btn')?.addEventListener('click', () => {
+      if (typeof this.onAction === 'function') {
+        this.onAction({ action: 'prompt_gpt' });
+      }
+    });
 
     finishedEl.querySelector('.restart-btn').addEventListener('click', () => {
       this.currentIndex = 0;

@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Google Gemini Mock - swiPT Integration Test</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Share+Tech+Mono&family=VT323&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../content/styles.css">
+  <style>
+    :root {
+      --gemini-bg: #131314;
+      --gemini-surface: #1e1f20;
+      --gemini-surface-hover: #282a2c;
+      --gemini-border: #333538;
+      --gemini-text: #e3e3e3;
+      --gemini-muted: #9aa0a6;
+      --gemini-accent: #a8c7fa;
+      --gemini-blue: #1a73e8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--gemini-bg);
+      color: var(--gemini-text);
+      font-family: "Google Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Sidebar */
+    .gemini-sidebar {
+      width: 260px;
+      background: #181a1b;
+      border-right: 1px solid var(--gemini-border);
+      padding: 16px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .sidebar-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 16px;
+      font-weight: 500;
+      color: #fff;
+      padding: 8px;
+    }
+
+    .gemini-sparkle {
+      color: var(--gemini-accent);
+      font-size: 18px;
+    }
+
+    .btn-new-chat {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      background: var(--gemini-surface);
+      border: 1px solid var(--gemini-border);
+      border-radius: 999px;
+      color: var(--gemini-text);
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-new-chat:hover {
+      background: var(--gemini-surface-hover);
+    }
+
+    .history-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--gemini-muted);
+      padding: 6px 8px;
+    }
+
+    .history-item {
+      padding: 9px 12px;
+      border-radius: 8px;
+      font-size: 13px;
+      color: #c4c7c5;
+      cursor: pointer;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .history-item.active {
+      background: rgba(168, 199, 250, 0.12);
+      color: var(--gemini-accent);
+    }
+
+    .btn-stream-gemini {
+      margin-top: auto;
+      padding: 10px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #1a73e8, #8ab4f8);
+      color: #040c17;
+      font-weight: 600;
+      font-size: 13px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-stream-gemini:hover {
+      filter: brightness(1.1);
+    }
+
+    /* Main Chat Container */
+    .gemini-main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      background: var(--gemini-bg);
+      overflow-y: auto;
+      padding-bottom: 120px;
+    }
+
+    .gemini-conversation {
+      max-width: 820px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 32px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    /* User Query Turn */
+    .user-query {
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .query-content {
+      background: var(--gemini-surface);
+      border: 1px solid var(--gemini-border);
+      border-radius: 20px 20px 4px 20px;
+      padding: 14px 20px;
+      max-width: 80%;
+      font-size: 15px;
+      line-height: 1.5;
+      color: #f1f3f4;
+    }
+
+    /* Model Response Turn */
+    model-response.gemini-mock-model-turn {
+      display: flex;
+      gap: 16px;
+      width: 100%;
+    }
+
+    .model-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #4285f4, #9b72cb, #d96570);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      color: #fff;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .message-content {
+      flex: 1;
+      font-size: 15px;
+      line-height: 1.6;
+      color: #e3e3e3;
+    }
+
+    .message-content p {
+      margin-bottom: 14px;
+    }
+
+    .message-content ol,
+    .message-content ul {
+      margin: 12px 0 16px 24px;
+    }
+
+    .message-content li {
+      margin-bottom: 10px;
+      padding-left: 4px;
+    }
+
+    .message-content strong {
+      color: #fff;
+    }
+
+    .message-content blockquote {
+      border-left: 3px solid var(--gemini-accent);
+      padding-left: 14px;
+      margin: 12px 0;
+      color: var(--gemini-muted);
+      font-style: italic;
+    }
+
+    /* Input Bar */
+    .gemini-input-bar {
+      position: fixed;
+      bottom: 20px;
+      left: calc(260px + (100% - 260px) / 2);
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 820px;
+      padding: 0 24px;
+      z-index: 1000;
+    }
+
+    .gemini-input-box {
+      background: var(--gemini-surface);
+      border: 1px solid var(--gemini-border);
+      border-radius: 28px;
+      padding: 10px 18px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+      position: relative;
+    }
+
+    .gemini-input-box:focus-within {
+      border-color: var(--gemini-accent);
+    }
+
+    .btn-attach-plus {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--gemini-muted);
+      font-size: 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      flex-shrink: 0;
+    }
+
+    .btn-attach-plus:hover {
+      background: var(--gemini-surface-hover);
+      color: #fff;
+    }
+
+    rich-textarea {
+      flex: 1;
+      display: block;
+    }
+
+    rich-textarea div[contenteditable="true"] {
+      outline: none;
+      color: var(--gemini-text);
+      font-size: 15px;
+      font-family: inherit;
+      min-height: 24px;
+      max-height: 120px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+    }
+
+    rich-textarea div[contenteditable="true"]:empty:before {
+      content: attr(placeholder);
+      color: var(--gemini-muted);
+      pointer-events: none;
+    }
+
+    .btn-send-gemini {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: var(--gemini-accent);
+      color: #040c17;
+      border: none;
+      font-size: 15px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      flex-shrink: 0;
+    }
+
+    .btn-send-gemini:hover {
+      filter: brightness(1.1);
+      transform: scale(1.05);
+    }
+
+    /* Popover Menu */
+    .gemini-plus-menu {
+      position: absolute;
+      bottom: calc(100% + 10px);
+      left: 16px;
+      background: #252729;
+      border: 1px solid var(--gemini-border);
+      border-radius: 12px;
+      padding: 6px;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.6);
+      width: 290px;
+      z-index: 10000;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .native-menu-item {
+      padding: 10px 14px;
+      border-radius: 8px;
+      color: #e3e3e3;
+      font-size: 13px;
+      cursor: pointer;
+      transition: background 0.15s;
+    }
+
+    .native-menu-item:hover {
+      background: rgba(255, 255, 255, 0.08);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Gemini Mock Sidebar -->
+  <aside class="gemini-sidebar">
+    <div class="sidebar-header">
+      <span class="gemini-sparkle">✦</span>
+      <span>Gemini Advanced</span>
+    </div>
+
+    <button class="btn-new-chat">
+      <span>+</span>
+      <span>New chat</span>
+    </button>
+
+    <div class="history-label">Recent</div>
+    <div class="history-item active">Frontend Frameworks 2026</div>
+    <div class="history-item">Cloudflare Pages vs Vercel</div>
+    <div class="history-item">FastAPI Async Architecture</div>
+
+    <button class="btn-stream-gemini" id="btn-stream-gemini">
+      ⚡ Stream New List Answer
+    </button>
+  </aside>
+
+  <!-- Gemini Main Chat -->
+  <main class="gemini-main">
+    <div class="gemini-conversation" id="conversation-container">
+
+      <!-- Turn 1: User Query -->
+      <div class="user-query">
+        <div class="query-content">
+          Compare 4 modern frontend web frameworks for 2026.
+        </div>
+      </div>
+
+      <!-- Turn 1: Model Response (LIST -> Swipe button MUST appear here) -->
+      <model-response class="gemini-mock-model-turn" id="turn-1">
+        <div class="model-avatar">✦</div>
+        <div class="message-content">
+          <p>Here is a comparison of 4 leading modern frontend frameworks in 2026:</p>
+          <ol>
+            <li>
+              <strong>Next.js 16 (App Router):</strong> Industry standard for full-stack React applications with server components, incremental static regeneration, and deep edge rendering support.
+            </li>
+            <li>
+              <strong>Vite + React 19:</strong> Blazing-fast client-side development setup offering instant HMR, modern JSX compiler optimizations, and minimal bundle overhead.
+            </li>
+            <li>
+              <strong>Astro 5:</strong> Best-in-class content-driven web framework using Islands Architecture for zero-JS by default and exceptional Core Web Vitals.
+            </li>
+            <li>
+              <strong>SvelteKit 2:</strong> Highly reactive, compiler-driven framework with concise syntax, built-in transitions, and zero virtual DOM runtime performance.
+            </li>
+          </ol>
+          <!-- swiPT button will be injected here automatically -->
+        </div>
+      </model-response>
+
+      <!-- Turn 2: User Query -->
+      <div class="user-query">
+        <div class="query-content">
+          Can I deploy Astro on Cloudflare Pages?
+        </div>
+      </div>
+
+      <!-- Turn 2: Model Response (NO LIST -> Conversational text, Swipe button must NOT appear) -->
+      <model-response class="gemini-mock-model-turn" id="turn-2-conversational">
+        <div class="model-avatar">✦</div>
+        <div class="message-content">
+          <p><strong>Yes, absolutely!</strong> Astro has first-class native support for Cloudflare Pages.</p>
+          <blockquote>
+            <p>Cloudflare Pages provides global low-latency edge deployment with zero configuration using the <code>@astrojs/cloudflare</code> adapter.</p>
+          </blockquote>
+          <p>You can simply run <code>npx astro add cloudflare</code> to configure your project for edge SSR or static asset distribution.</p>
+        </div>
+      </model-response>
+
+    </div>
+
+    <!-- Gemini Bottom Input Bar -->
+    <div class="gemini-input-bar">
+      <!-- Gemini '+' Menu Popover -->
+      <div class="gemini-plus-menu" id="gemini-plus-menu" role="menu" style="display: none;">
+        <div role="menuitem" class="native-menu-item">📎 Upload files</div>
+        <div role="menuitem" class="native-menu-item">🖼️ Add image from Google Drive</div>
+        <div role="menuitem" class="native-menu-item">📍 Add location context</div>
+        <!-- swiPT @swiPT Context will be injected here dynamically! -->
+      </div>
+
+      <div class="gemini-input-box">
+        <button type="button" class="btn-attach-plus" id="gemini-plus-btn" aria-label="Add files" title="Tools menu">+</button>
+        <rich-textarea>
+          <div contenteditable="true" role="textbox" id="gemini-prompt-input" placeholder="Ask Gemini or type @swiPT..."></div>
+        </rich-textarea>
+        <button type="button" class="btn-send-gemini" id="gemini-send-btn" aria-label="Send message" title="Send">➤</button>
+      </div>
+    </div>
+  </main>
+
+  <!-- swiPT Extension Scripts -->
+  <script src="../storage/storage.js"></script>
+  <script src="../content/cardParser.js"></script>
+  <script src="../content/swipeEngine.js"></script>
+  <script src="../content/content.js"></script>
+
+  <!-- Simulation Logic for Gemini Interactive Chat -->
+  <script>
+    const plusBtn = document.getElementById('gemini-plus-btn');
+    const plusMenu = document.getElementById('gemini-plus-menu');
+    const sendBtn = document.getElementById('gemini-send-btn');
+    const promptInput = document.getElementById('gemini-prompt-input');
+    const container = document.getElementById('conversation-container');
+
+    // Toggle '+' menu
+    plusBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isHidden = plusMenu.style.display === 'none';
+      plusMenu.style.display = isHidden ? 'flex' : 'none';
+    });
+
+    document.addEventListener('click', (e) => {
+      if (plusMenu && !plusMenu.contains(e.target) && e.target !== plusBtn) {
+        plusMenu.style.display = 'none';
+      }
+    });
+
+    // Handle Gemini user submission
+    function submitPrompt() {
+      const text = (promptInput.innerText || promptInput.textContent || '').trim();
+      if (!text) return;
+
+      // Add user turn
+      const userDiv = document.createElement('div');
+      userDiv.className = 'user-query';
+      userDiv.innerHTML = `<div class="query-content" style="white-space: pre-wrap;">${escapeHtml(text)}</div>`;
+      container.appendChild(userDiv);
+      promptInput.innerHTML = '';
+
+      const hasSwiPT = text.includes('@swiPT') || text.includes('[Context from @swiPT');
+
+      // Add Gemini model response with streaming
+      const modelTurn = document.createElement('model-response');
+      modelTurn.className = 'gemini-mock-model-turn';
+      modelTurn.innerHTML = `
+        <div class="model-avatar">✦</div>
+        <div class="message-content">
+          <p>Thinking with Gemini 1.5 Pro...</p>
+        </div>
+      `;
+      container.appendChild(modelTurn);
+      window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+
+      setTimeout(() => {
+        const content = modelTurn.querySelector('.message-content');
+        if (hasSwiPT) {
+          content.innerHTML = `
+            <p>I have pulled your selections from <strong>@swiPT</strong>! Here is an architectural recommendation for your chosen options:</p>
+            <ol>
+              <li><strong>Recommended Stack:</strong> Next.js and Vite pair effectively for high-performance dashboards and modular prototypes.</li>
+              <li><strong>Deployment Strategy:</strong> Cloudflare edge routing allows you to deploy static assets with instant global caching.</li>
+              <li><strong>Next Step:</strong> Would you like me to write a sample configuration or starter template for your preferred setup?</li>
+            </ol>
+          `;
+        } else {
+          content.innerHTML = `
+            <p>Here is my response to: "${escapeHtml(text)}".</p>
+            <ul>
+              <li><strong>Recommendation:</strong> Always verify requirements with early prototypes.</li>
+              <li><strong>Tip:</strong> Mention <code>@swiPT</code> to pull your card deck selections directly into this conversation!</li>
+            </ul>
+          `;
+        }
+        window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+      }, 900);
+    }
+
+    sendBtn.addEventListener('click', submitPrompt);
+    promptInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        submitPrompt();
+      }
+    });
+
+    function escapeHtml(str) {
+      return (str || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    // Stream new list answer simulation
+    document.getElementById('btn-stream-gemini').addEventListener('click', () => {
+      const userDiv = document.createElement('div');
+      userDiv.className = 'user-query';
+      userDiv.innerHTML = `<div class="query-content">What are 3 benefits of Vector Databases in 2026?</div>`;
+      container.appendChild(userDiv);
+
+      const modelTurn = document.createElement('model-response');
+      modelTurn.className = 'gemini-mock-model-turn';
+      modelTurn.innerHTML = `
+        <div class="model-avatar">✦</div>
+        <div class="message-content">
+          <p>Generating Vector DB analysis...</p>
+        </div>
+      `;
+      container.appendChild(modelTurn);
+
+      setTimeout(() => {
+        const content = modelTurn.querySelector('.message-content');
+        content.innerHTML = `
+          <p>Here are 3 core advantages of vector databases for AI systems:</p>
+          <ul>
+            <li><strong>High-Dimensional Semantic Search:</strong> Enables approximate nearest neighbor (ANN) retrieval across millions of embeddings in milliseconds.</li>
+            <li><strong>Hybrid Filtering & Metadata Search:</strong> Combines lexical BM25 filtering with dense vector search for maximum retrieval accuracy.</li>
+            <li><strong>Scalable RAG Context Stores:</strong> Acts as continuous external memory for Large Language Models without requiring re-training.</li>
+          </ul>
+        `;
+      }, 1000);
+    });
+  </script>
+</body>
+</html>
